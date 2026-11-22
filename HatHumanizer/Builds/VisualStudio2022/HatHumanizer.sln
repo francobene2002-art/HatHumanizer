@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio Version 17
+
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HatHumanizer - Standalone Plugin", "HatHumanizer_StandalonePlugin.vcxproj", "{30EC243E-4834-7D42-53A0-A5D332C958DA}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5C3A8918-535B-97CF-3AC9-BF6E15A5F64E} = {5C3A8918-535B-97CF-3AC9-BF6E15A5F64E}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HatHumanizer - VST3", "HatHumanizer_VST3.vcxproj", "{B3F6E7DD-A4A9-E57A-9D02-A2FC19A70BE6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5C3A8918-535B-97CF-3AC9-BF6E15A5F64E} = {5C3A8918-535B-97CF-3AC9-BF6E15A5F64E}
+		{3BE85E23-EBCC-AE87-C01A-6A58F227D6FD} = {3BE85E23-EBCC-AE87-C01A-6A58F227D6FD}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HatHumanizer - Shared Code", "HatHumanizer_SharedCode.vcxproj", "{5C3A8918-535B-97CF-3AC9-BF6E15A5F64E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HatHumanizer - VST3 Manifest Helper", "HatHumanizer_VST3ManifestHelper.vcxproj", "{3BE85E23-EBCC-AE87-C01A-6A58F227D6FD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B3F6E7DD-A4A9-E57A-9D02-A2FC19A70BE6}.Debug|x64.ActiveCfg = Debug|x64
+		{B3F6E7DD-A4A9-E57A-9D02-A2FC19A70BE6}.Debug|x64.Build.0 = Debug|x64
+		{B3F6E7DD-A4A9-E57A-9D02-A2FC19A70BE6}.Release|x64.ActiveCfg = Release|x64
+		{B3F6E7DD-A4A9-E57A-9D02-A2FC19A70BE6}.Release|x64.Build.0 = Release|x64
+		{30EC243E-4834-7D42-53A0-A5D332C958DA}.Debug|x64.ActiveCfg = Debug|x64
+		{30EC243E-4834-7D42-53A0-A5D332C958DA}.Debug|x64.Build.0 = Debug|x64
+		{30EC243E-4834-7D42-53A0-A5D332C958DA}.Release|x64.ActiveCfg = Release|x64
+		{30EC243E-4834-7D42-53A0-A5D332C958DA}.Release|x64.Build.0 = Release|x64
+		{5C3A8918-535B-97CF-3AC9-BF6E15A5F64E}.Debug|x64.ActiveCfg = Debug|x64
+		{5C3A8918-535B-97CF-3AC9-BF6E15A5F64E}.Debug|x64.Build.0 = Debug|x64
+		{5C3A8918-535B-97CF-3AC9-BF6E15A5F64E}.Release|x64.ActiveCfg = Release|x64
+		{5C3A8918-535B-97CF-3AC9-BF6E15A5F64E}.Release|x64.Build.0 = Release|x64
+		{3BE85E23-EBCC-AE87-C01A-6A58F227D6FD}.Debug|x64.ActiveCfg = Debug|Win32
+		{3BE85E23-EBCC-AE87-C01A-6A58F227D6FD}.Debug|x64.Build.0 = Debug|Win32
+		{3BE85E23-EBCC-AE87-C01A-6A58F227D6FD}.Release|x64.ActiveCfg = Release|Win32
+		{3BE85E23-EBCC-AE87-C01A-6A58F227D6FD}.Release|x64.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

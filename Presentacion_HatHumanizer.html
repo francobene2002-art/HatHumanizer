@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HatHumanizer — Presentación Oral</title>
+<style>
+  :root {
+    /* 60s Hollywood Warm Vintage Palette - Cohesive & Minimal */
+    --bg: #12100e;
+    --card: #1c1815;
+    --card-hover: #24201b;
+    --border: #383028;
+    --border-accent: #61503e;
+    --text: #f5efe6;
+    --muted: #a89e92;
+    --brass: #d4a34b;
+    --brass-light: #e8bd68;
+    --brass-glow: rgba(212, 163, 75, 0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0a0908;
+    font-family: -apple-system, BlinkMacSystemFont, "Georgia", "Segoe UI", Roboto, serif;
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    user-select: none;
+  }
+
+  /* 16:9 Widescreen Frame */
+  .deck-container {
+    width: 100%;
+    max-width: 1120px;
+    aspect-ratio: 16 / 9;
+    background: radial-gradient(circle at 50% 10%, #1f1a15 0%, #12100e 75%);
+    border: 2px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.95), 0 0 0 1px rgba(212,163,75,0.12);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Fine Gold Pinstripe Top Border */
+  .deck-container::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--brass), var(--brass-light), var(--brass), transparent);
+    z-index: 10;
+  }
+
+  .slide {
+    display: none;
+    flex: 1;
+    padding: 44px 54px;
+    flex-direction: column;
+    justify-content: space-between;
+    animation: fadeIn 0.22s ease-out;
+    position: relative;
+    z-index: 2;
+  }
+
+  .slide.active { display: flex; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.99); }
+    to { opacity: 1; scale(1); }
+  }
+
+  /* Header Styles */
+  .slide-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 24px;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 20px;
+    background: var(--brass-glow);
+    border: 1px solid rgba(212, 163, 75, 0.35);
+    color: var(--brass-light);
+    margin-bottom: 8px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  .slide-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.5px;
+    font-family: 'Georgia', serif;
+  }
+
+  /* ================= SLIDE 1: HERO COVER ================= */
+  .hero-wrapper {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1.25fr 1fr;
+    gap: 30px;
+    align-items: center;
+  }
+
+  .hero-main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .hero-tag {
+    color: var(--brass);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  .hero-title {
+    font-size: 54px;
+    font-weight: 800;
+    letter-spacing: -1px;
+    line-height: 1.05;
+    color: #fff;
+    font-family: 'Georgia', serif;
+    margin-bottom: 12px;
+  }
+
+  .hero-sub {
+    font-size: 16.5px;
+    color: var(--muted);
+    line-height: 1.45;
+    margin-bottom: 26px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  .hero-badges {
+    display: flex;
+    gap: 10px;
+  }
+
+  .tech-badge {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--brass-light);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  /* Big Cymbal Graphic */
+  .cymbal-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .cymbal-svg {
+    width: 280px;
+    height: 280px;
+    filter: drop-shadow(0 15px 35px rgba(0,0,0,0.8));
+    animation: gentleRotate 20s linear infinite;
+  }
+
+  @keyframes gentleRotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  /* ================= SLIDE 2: 3 CARDS ================= */
+  .cards-3-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 18px;
+    flex: 1;
+    align-items: stretch;
+  }
+
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.2s;
+  }
+
+  .stat-card:hover {
+    border-color: var(--brass);
+    background: var(--card-hover);
+  }
+
+  .stat-icon {
+    font-size: 26px;
+    margin-bottom: 12px;
+  }
+
+  .stat-headline {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+    font-family: 'Georgia', serif;
+  }
+
+  .stat-desc {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.5;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  .stat-highlight {
+    margin-top: 14px;
+    padding: 7px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--brass-glow);
+    color: var(--brass-light);
+    border: 1px solid rgba(212, 163, 75, 0.25);
+  }
+
+  /* ================= SLIDE 3: DSP SIGNAL FLOW (UNIFIED PALETTE) ================= */
+  .dsp-flow {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    flex: 1;
+    align-items: center;
+  }
+
+  .flow-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--brass);
+    border-radius: 10px;
+    padding: 20px 18px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    min-height: 200px;
+    justify-content: space-between;
+  }
+
+  .step-num {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    color: var(--brass);
+    text-transform: uppercase;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  .flow-card h3 {
+    font-size: 16.5px;
+    font-weight: 700;
+    color: #fff;
+    margin: 8px 0 6px;
+    font-family: 'Georgia', serif;
+  }
+
+  .flow-card p {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.45;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  .flow-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: 10px;
+    background: var(--brass-glow);
+    color: var(--brass-light);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  /* ================= SLIDE 4: UNIFIED DEV & MENTION ================= */
+  .dev-unified-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 32px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .dev-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .dev-block {
+    background: rgba(255,255,255,0.02);
+    border-left: 3px solid var(--brass);
+    padding: 14px 18px;
+    border-radius: 0 8px 8px 0;
+  }
+
+  .dev-block h4 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 4px;
+    font-family: 'Georgia', serif;
+  }
+
+  .dev-block p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.45;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  .ai-mention-bar {
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    color: var(--muted);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  .ai-mention-bar strong {
+    color: var(--brass-light);
+  }
+
+  /* ================= SLIDE 5: 3 SIMPLE PHASES ================= */
+  .timeline-simple {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 18px;
+    flex: 1;
+    align-items: stretch;
+  }
+
+  .phase-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-top: 3px solid var(--brass);
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+  }
+
+  .phase-badge {
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    color: var(--brass);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  .phase-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 12px;
+    line-height: 1.25;
+    font-family: 'Georgia', serif;
+  }
+
+  .phase-list {
+    list-style: none;
+  }
+
+  .phase-list li {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    line-height: 1.4;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  .phase-list li::before {
+    content: '•';
+    color: var(--brass);
+    font-weight: bold;
+  }
+
+  /* Bottom Controls Bar */
+  .controls-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 1120px;
+    margin-top: 14px;
+  }
+
+  .btn {
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  .btn:hover {
+    background: #24201b;
+    border-color: var(--brass);
+  }
+
+  .slide-counter {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  @media print {
+    body { background: #fff; padding: 0; }
+    .controls-bar { display: none; }
+    .deck-container { box-shadow: none; border: none; max-width: 100%; height: 100vh; page-break-after: always; }
+    .slide { display: flex !important; page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="deck-container">
+
+  <!-- ================= SLIDE 1 ================= -->
+  <div class="slide active" id="slide-1">
+    <div class="hero-wrapper">
+      <div class="hero-main">
+        <div class="hero-tag">
+          Tamaba · Creatividad e Innovación
+        </div>
+        <h1 class="hero-title">HAT HUMANIZER</h1>
+        <p class="hero-sub">Procesamiento DSP Dinámico de Hi-Hats para Producción de Trap y Hip Hop</p>
+        <div class="hero-badges">
+          <span class="tech-badge">Franco Benedetti</span>
+          <span class="tech-badge">Grupo Estocástico</span>
+          <span class="tech-badge">VST3 · JUCE 9</span>
+        </div>
+      </div>
+
+      <!-- Hi-Hat Cymbal Vector Graphic -->
+      <div class="cymbal-container">
+        <svg class="cymbal-svg" viewBox="0 0 300 300">
+          <defs>
+            <radialGradient id="brassGrad" cx="45%" cy="40%" r="55%">
+              <stop offset="0%" stop-color="#fff5cc"/>
+              <stop offset="15%" stop-color="#e8bd68"/>
+              <stop offset="45%" stop-color="#c9933b"/>
+              <stop offset="75%" stop-color="#8c5f21"/>
+              <stop offset="100%" stop-color="#4a310e"/>
+            </radialGradient>
+            <radialGradient id="bellGrad" cx="40%" cy="35%" r="50%">
+              <stop offset="0%" stop-color="#ffffff"/>
+              <stop offset="40%" stop-color="#f5d78e"/>
+              <stop offset="100%" stop-color="#8c5f21"/>
+            </radialGradient>
+          </defs>
+
+          <!-- Outer Cymbal Body -->
+          <circle cx="150" cy="150" r="138" fill="url(#brassGrad)" stroke="#594016" stroke-width="2"/>
+
+          <!-- Tonal Grooves (Concentric Lathe Rings) -->
+          <circle cx="150" cy="150" r="126" fill="none" stroke="#6e4c1c" stroke-width="0.75" opacity="0.6"/>
+          <circle cx="150" cy="150" r="114" fill="none" stroke="#fff" stroke-width="0.5" opacity="0.3"/>
+          <circle cx="150" cy="150" r="102" fill="none" stroke="#523812" stroke-width="0.75" opacity="0.7"/>
+          <circle cx="150" cy="150" r="90" fill="none" stroke="#fff" stroke-width="0.5" opacity="0.3"/>
+          <circle cx="150" cy="150" r="78" fill="none" stroke="#6e4c1c" stroke-width="0.75" opacity="0.6"/>
+          <circle cx="150" cy="150" r="66" fill="none" stroke="#523812" stroke-width="0.75" opacity="0.7"/>
+
+          <!-- Center Bell -->
+          <circle cx="150" cy="150" r="42" fill="url(#bellGrad)" stroke="#594016" stroke-width="1.5"/>
+          <circle cx="150" cy="150" r="12" fill="#24190a" stroke="#120c04" stroke-width="2"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SLIDE 2 ================= -->
+  <div class="slide" id="slide-2">
+    <div class="slide-header">
+      <div>
+        <div class="pill">El Diagnóstico</div>
+        <h2 class="slide-title">El Problema en el Estudio</h2>
+      </div>
+    </div>
+
+    <div class="cards-3-col">
+      <div class="stat-card">
+        <div>
+          <div class="stat-icon">🎧</div>
+          <h3 class="stat-headline">Producción Diaria</h3>
+          <p class="stat-desc">Produzco beats de Trap y Hip Hop para artistas de EE.UU. El hi-hat es el pulso y la energía de todo el tema.</p>
+        </div>
+        <div class="stat-highlight">Volumen alto de entregas</div>
+      </div>
+
+      <div class="stat-card">
+        <div>
+          <div class="stat-icon">⏳</div>
+          <h3 class="stat-headline">Edición Repetitiva</h3>
+          <p class="stat-desc">Humanizar a mano es monótono: mover micro-tiempos, dibujar velocities y acomodar afinación nota por nota.</p>
+        </div>
+        <div class="stat-highlight">Cuello de botella en DAW</div>
+      </div>
+
+      <div class="stat-card">
+        <div>
+          <div class="stat-icon">🚫</div>
+          <h3 class="stat-headline">Límite del MIDI</h3>
+          <p class="stat-desc">Las herramientas de los DAWs solo tocan MIDI. No sirven en loops de audio cerrados ni stems ya grabados.</p>
+        </div>
+        <div class="stat-highlight">Necesidad de audio directo</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SLIDE 3 ================= -->
+  <div class="slide" id="slide-3">
+    <div class="slide-header">
+      <div>
+        <div class="pill">Cadena DSP</div>
+        <h2 class="slide-title">Cómo Funciona HatHumanizer</h2>
+      </div>
+    </div>
+
+    <div class="dsp-flow">
+      <div class="flow-card">
+        <div>
+          <div class="step-num">Paso 01</div>
+          <h3>Filtro Limpio</h3>
+          <p>Filtro ajustable (150 a 8 000 Hz) para que el redoblante o el bombo no disparen el efecto.</p>
+        </div>
+        <span class="flow-badge">Filtro Butterworth</span>
+      </div>
+
+      <div class="flow-card">
+        <div>
+          <div class="step-num">Paso 02</div>
+          <h3>Humanización</h3>
+          <p>Micro-variaciones aleatorias de tiempo (0 a 30 ms), volumen, panorama y pitch por golpe.</p>
+        </div>
+        <span class="flow-badge">Interpolación Hermite</span>
+      </div>
+
+      <div class="flow-card">
+        <div>
+          <div class="step-num">Paso 03</div>
+          <h3>Trap Rolls</h3>
+          <p>Generador de redobles sincrónicos al tempo del proyecto (1/16 a 1/64) sin clicks digitales.</p>
+        </div>
+        <span class="flow-badge">BPM Sync & Choke</span>
+      </div>
+
+      <div class="flow-card">
+        <div>
+          <div class="step-num">Paso 04</div>
+          <h3>Print & Bounce</h3>
+          <p>Buscás el sonido deseado y grabás la toma final única para mezclar.</p>
+        </div>
+        <span class="flow-badge">Flujo de Estudio</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SLIDE 4 ================= -->
+  <div class="slide" id="slide-4">
+    <div class="slide-header">
+      <div>
+        <div class="pill">Desarrollo</div>
+        <h2 class="slide-title">Ingeniería en C++ y JUCE</h2>
+      </div>
+    </div>
+
+    <div class="dev-unified-card">
+      <div class="dev-row" style="grid-template-columns: 1fr 1fr 1fr; gap: 16px;">
+        <div class="dev-block">
+          <h4>Framework JUCE 9</h4>
+          <p>Estándar de la industria en C++ para desarrollo de audio profesional y plugins VST3 nativos.</p>
+        </div>
+        <div class="dev-block">
+          <h4>Audio Thread en Tiempo Real</h4>
+          <p>Procesamiento matemático de 64 bits con latencia cero y gestión de memoria lock-free.</p>
+        </div>
+        <div class="dev-block">
+          <h4>Arquitectura Desacoplada</h4>
+          <p>El motor de audio corre de forma 100% aislada e independiente de la interfaz gráfica.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SLIDE 5 ================= -->
+  <div class="slide" id="slide-5">
+    <div class="slide-header">
+      <div>
+        <div class="pill">Plan de Trabajo</div>
+        <h2 class="slide-title">Etapas del Cuatrimestre</h2>
+      </div>
+    </div>
+
+    <div class="timeline-simple">
+      <div class="phase-card">
+        <div>
+          <div class="phase-badge">Etapa 1 · Semanas 1 a 4</div>
+          <h3 class="phase-title">Prototipo & Entender el Código</h3>
+          <ul class="phase-list">
+            <li>Desarrollo del primer prototipo funcional.</li>
+            <li>Estudiar a fondo cómo opera el audio en C++.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="phase-card">
+        <div>
+          <div class="phase-badge">Etapa 2 · Semanas 5 y 6</div>
+          <h3 class="phase-title">Testear en Mezclas Reales</h3>
+          <ul class="phase-list">
+            <li>Probar con distintos tipos de hi-hats.</li>
+            <li>Calibrar el filtro para eliminar errores y falsos disparos.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="phase-card">
+        <div>
+          <div class="phase-badge">Etapa 3 · Semanas 7 a 10</div>
+          <h3 class="phase-title">Nuevas Funciones & Cierre</h3>
+          <ul class="phase-list">
+            <li>Explorar saturación suave o aplicarlo a voces.</li>
+            <li>Diseño visual definitivo y entrega de cierre.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Bottom Navigation -->
+<div class="controls-bar">
+  <button class="btn" id="prev-btn" onclick="prevSlide()">◀ Anterior</button>
+  <span class="slide-counter" id="slide-counter">1 / 5</span>
+  <button class="btn" id="next-btn" onclick="nextSlide()">Siguiente ▶</button>
+</div>
+
+<script>
+  let currentSlide = 1;
+  const totalSlides = 5;
+
+  function showSlide(n) {
+    if (n < 1) n = 1;
+    if (n > totalSlides) n = totalSlides;
+    currentSlide = n;
+
+    document.querySelectorAll('.slide').forEach((s, idx) => {
+      s.classList.toggle('active', idx + 1 === currentSlide);
+    });
+
+    document.getElementById('slide-counter').textContent = `${currentSlide} / ${totalSlides}`;
+    document.getElementById('prev-btn').disabled = (currentSlide === 1);
+    document.getElementById('next-btn').disabled = (currentSlide === totalSlides);
+  }
+
+  function nextSlide() {
+    if (currentSlide < totalSlides) showSlide(currentSlide + 1);
+  }
+
+  function prevSlide() {
+    if (currentSlide > 1) showSlide(currentSlide - 1);
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') {
+      nextSlide();
+    } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+      prevSlide();
+    }
+  });
+
+  showSlide(1);
+</script>
+
+</body>
+</html>

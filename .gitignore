@@ -1,0 +1,38 @@
+# Visual Studio / MSVC build artifacts
+**/.vs/
+**/*.obj
+**/*.lib
+**/*.exp
+**/*.pdb
+**/*.ilk
+**/*.idb
+**/*.tlog
+**/*.lastcodeanalysissucceeded
+**/*.log
+**/*.res
+**/*.manifest
+**/*.exe
+**/*.dll
+**/*.iobj
+**/*.ipdb
+**/*.recipe
+**/*.txt
+
+# JUCE Build directories (ignore intermediate compiler outputs)
+**/x64/
+**/Win32/
+**/*.vst3/
+
+# Backups
+**/Source_Backup_PreVisualizer/
+
+# VS user configuration
+*.suo
+*.user
+*.ncb
+*.sdf
+*.opensdf
+
+# OS files
+Thumbs.db
+.DS_Store
