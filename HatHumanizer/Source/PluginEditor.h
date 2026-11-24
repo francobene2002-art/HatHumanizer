@@ -87,8 +87,9 @@ public:
         g.setFont (juce::FontOptions (8.0f).withStyle ("Bold"));
         g.drawText ("TRANSIENT SCOPE", (int)screen.getX() + 6, (int)screen.getY() + 3, 100, 10, juce::Justification::left);
 
-        // 4. Threshold Line
-        const float thrY = midY - juce::jlimit (0.0f, 1.0f, thresholdLinear) * (screen.getHeight() * 0.65f);
+        // 4. Threshold Line (scaled perceptually with square-root curve for visual clarity across entire dB range)
+        const float visualThr = std::sqrt (juce::jlimit (0.0f, 1.0f, thresholdLinear));
+        const float thrY = midY - visualThr * (screen.getHeight() * 0.68f);
         g.setColour (juce::Colour (0xccd97706));
         const float dashLengths[] = { 4.0f, 3.0f };
         juce::Line<float> thrLine (screen.getX() + 4.0f, thrY, screen.getRight() - 4.0f, thrY);
@@ -110,8 +111,9 @@ public:
         for (int i = 0; i < bufferSize; ++i)
         {
             const float x = startX + (static_cast<float>(i) / static_cast<float>(bufferSize - 1)) * w;
-            const float val = juce::jlimit (0.0f, 1.0f, scopeData[i]);
-            const float y = midY - val * (screen.getHeight() * 0.65f);
+            const float rawVal = juce::jlimit (0.0f, 1.0f, scopeData[i]);
+            const float visualVal = std::sqrt (rawVal);
+            const float y = midY - visualVal * (screen.getHeight() * 0.68f);
             wavePath.lineTo (x, y);
             fillPath.lineTo (x, y);
         }

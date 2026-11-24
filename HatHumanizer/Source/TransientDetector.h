@@ -58,15 +58,15 @@ public:
     // Process a single audio sample (L and R). Returns true if a transient hit is detected.
     bool processSample(float inL, float inR)
     {
-        // 1. Mono fold & peak rectification
-        const float inputMagnitude = std::max(std::abs(inL), std::abs(inR));
+        // 1. Mono fold on raw bipolar signal (preserves phase & true frequency content)
+        const float inputMono = (inL + inR) * 0.5f;
 
-        // 2. 2nd-order (12 dB/octave) Butterworth High-Pass filter for detection sidechain
-        // Rejects low snare fundamentals (200-400 Hz) and snare body (800-1200 Hz),
-        // isolating only the crisp high-frequency sizzle of the hi-hat
-        const float hpOut = b0 * inputMagnitude + z1;
-        z1 = b1 * inputMagnitude - a1 * hpOut + z2;
-        z2 = b2 * inputMagnitude - a2 * hpOut;
+        // 2. 2nd-order (12 dB/octave) Butterworth High-Pass filter on audio signal
+        // True AC filtering: rejects kick/sub (40-100 Hz), snare body (200-800 Hz),
+        // cleanly isolating the high-frequency sizzle of the hi-hat (> 2 kHz)
+        const float hpOut = b0 * inputMono + z1;
+        z1 = b1 * inputMono - a1 * hpOut + z2;
+        z2 = b2 * inputMono - a2 * hpOut;
         const float filtered = std::abs(hpOut);
 
         // 3. Fast attack / controlled release envelope follower
@@ -78,9 +78,9 @@ public:
         samplesSinceLastTrigger++;
 
         // 4. Schmitt trigger arming logic:
-        // Must drop below threshold * 0.707 (-3 dB hysteresis) to re-arm,
-        // preventing false triggers during sustain tails.
-        if (envelope < (thresholdLinear * 0.707f) || samplesSinceLastTrigger > (holdOffSamples * 2))
+        // Re-arms when envelope drops below threshold * 0.707 (-3 dB hysteresis)
+        // or once the hold-off duration has elapsed.
+        if (envelope < (thresholdLinear * 0.707f) || samplesSinceLastTrigger >= holdOffSamples)
         {
             isArmed = true;
         }
