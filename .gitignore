@@ -38,6 +38,7 @@
 *.pptx
 Presentacion_HatHumanizer.html
 *.ps1
+*.zip
 
 # OS files
 Thumbs.db
