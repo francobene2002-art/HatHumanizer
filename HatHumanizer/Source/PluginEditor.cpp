@@ -128,14 +128,35 @@ void CustomKnobLookAndFeel::drawButtonBackground (juce::Graphics& g, juce::Butto
                                                   bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown)
 {
     auto r = button.getLocalBounds().toFloat();
-    juce::Colour base = shouldDrawButtonAsDown ? juce::Colour (0xffd8c9b2)
-                      : shouldDrawButtonAsHighlighted ? juce::Colour (0xfffaf3e6)
-                      : juce::Colour (0xffede1ce);
+    const bool isHeaderButton = (button.getHeight() <= 28 && button.getButtonText().contains ("PRESET"));
 
-    g.setColour (base);
-    g.fillRoundedRectangle (r, 4.0f);
-    g.setColour (juce::Colour (0xffbaa384));
-    g.drawRoundedRectangle (r, 4.0f, 1.0f);
+    if (isHeaderButton)
+    {
+        // Handcrafted dark walnut & brushed brass header button
+        juce::ColourGradient btnGrad (shouldDrawButtonAsDown ? juce::Colour (0xff22140b)
+                                     : shouldDrawButtonAsHighlighted ? juce::Colour (0xff4a2d1a)
+                                     : juce::Colour (0xff351f12), r.getCentreX(), r.getY(),
+                                      shouldDrawButtonAsDown ? juce::Colour (0xff140b06)
+                                     : juce::Colour (0xff20120a), r.getCentreX(), r.getBottom(), false);
+        g.setGradientFill (btnGrad);
+        g.fillRoundedRectangle (r, 4.0f);
+
+        // Brass bezel
+        g.setColour (juce::Colour (shouldDrawButtonAsHighlighted ? 0xfffae6b2 : 0xffc49e58));
+        g.drawRoundedRectangle (r, 4.0f, 1.1f);
+    }
+    else
+    {
+        // In-card button (ROLL NOW) with warm parchment/bakelite feel
+        juce::Colour base = shouldDrawButtonAsDown ? juce::Colour (0xffc4b197)
+                          : shouldDrawButtonAsHighlighted ? juce::Colour (0xfffdf6eb)
+                          : juce::Colour (0xffeae0cc);
+
+        g.setColour (base);
+        g.fillRoundedRectangle (r, 4.0f);
+        g.setColour (juce::Colour (0xff8f7556));
+        g.drawRoundedRectangle (r, 4.0f, 1.2f);
+    }
 }
 
 //==============================================================================
@@ -215,17 +236,19 @@ HatHumanizerAudioProcessorEditor::HatHumanizerAudioProcessorEditor (HatHumanizer
     authorLink.setButtonText ("Made by Franco Benedetti | Benebeats.com");
     authorLink.setURL (juce::URL ("https://benebeats.com"));
     authorLink.setFont (juce::FontOptions (11.0f).withStyle ("Bold"), false);
-    authorLink.setColour (juce::HyperlinkButton::textColourId, juce::Colour (0xff7a593e));
+    authorLink.setColour (juce::HyperlinkButton::textColourId, juce::Colour (0xffd8b474));
     addAndMakeVisible (authorLink);
 
     // Preset Buttons
     savePresetButton.setButtonText ("SAVE PRESET");
-    savePresetButton.setColour (juce::TextButton::textColourOffId, juce::Colour (0xff2b1b11));
+    savePresetButton.setColour (juce::TextButton::textColourOffId, juce::Colour (0xfffaeed2));
+    savePresetButton.setColour (juce::TextButton::textColourOnId,  juce::Colour (0xffffffff));
     savePresetButton.onClick = [this] { savePresetToFile(); };
     addAndMakeVisible (savePresetButton);
 
     loadPresetButton.setButtonText ("LOAD PRESET");
-    loadPresetButton.setColour (juce::TextButton::textColourOffId, juce::Colour (0xff2b1b11));
+    loadPresetButton.setColour (juce::TextButton::textColourOffId, juce::Colour (0xfffaeed2));
+    loadPresetButton.setColour (juce::TextButton::textColourOnId,  juce::Colour (0xffffffff));
     loadPresetButton.onClick = [this] { loadPresetFromFile(); };
     addAndMakeVisible (loadPresetButton);
 
@@ -338,37 +361,107 @@ void HatHumanizerAudioProcessorEditor::timerCallback()
 //==============================================================================
 void HatHumanizerAudioProcessorEditor::paint (juce::Graphics& g)
 {
-    // 1. Outer Toasted Walnut Chassis
-    juce::ColourGradient chassisGrad (juce::Colour (0xff342217), 0, 0,
-                                      juce::Colour (0xff1e130c), 0, (float)getHeight(), false);
+    // 1. Outer Handcrafted Walnut Cabinet / Chassis
+    juce::ColourGradient chassisGrad (juce::Colour (0xff24140b), 0, 0,
+                                      juce::Colour (0xff140b06), 0, (float)getHeight(), false);
     g.setGradientFill (chassisGrad);
     g.fillAll();
 
-    // 2. Vintage Cream Faceplate
-    auto faceplate = getLocalBounds().reduced (6).toFloat();
-    juce::ColourGradient plateGrad (juce::Colour (0xffede4d1), faceplate.getX(), faceplate.getY(),
-                                    juce::Colour (0xffdfcfb5), faceplate.getX(), faceplate.getBottom(), false);
-    g.setGradientFill (plateGrad);
-    g.fillRoundedRectangle (faceplate, 9.0f);
+    // 2. Warm Oiled Walnut Faceplate with Organic Wood Grain
+    auto faceplate = getLocalBounds().reduced (5).toFloat();
+    juce::ColourGradient woodBaseGrad (juce::Colour (0xff4b2f1c), faceplate.getCentreX(), faceplate.getY(),
+                                       juce::Colour (0xff2d1a0e), faceplate.getCentreX(), faceplate.getBottom(), false);
+    g.setGradientFill (woodBaseGrad);
+    g.fillRoundedRectangle (faceplate, 8.0f);
 
-    g.setColour (juce::Colour (0xffaa9374));
-    g.drawRoundedRectangle (faceplate, 9.0f, 1.5f);
+    // Procedural Organic Wood Grain Texturing
+    {
+        juce::Graphics::ScopedSaveState sss (g);
+        g.reduceClipRegion (faceplate.toNearestInt());
 
-    // 3. Vintage Corner Screws
+        const float startY = faceplate.getY();
+        const float endY = faceplate.getBottom();
+        const float w = faceplate.getWidth();
+
+        // Flowing horizontal grain growth rings
+        for (float gy = startY + 2.0f; gy < endY; gy += 4.2f)
+        {
+            juce::Path grain;
+            const float phase = gy * 0.052f;
+            grain.startNewSubPath (faceplate.getX(), gy + std::sin (phase) * 3.5f);
+
+            for (float gx = faceplate.getX() + 25.0f; gx <= faceplate.getRight(); gx += 25.0f)
+            {
+                const float nx = (gx - faceplate.getX()) / w;
+                const float wave = std::sin (phase + nx * 5.4f) * 4.0f
+                                 + std::sin (phase * 1.8f + nx * 11.2f) * 1.6f;
+                grain.lineTo (gx, gy + wave);
+            }
+
+            const int lineIdx = static_cast<int>(gy / 4.2f);
+            if (lineIdx % 3 == 0)
+            {
+                g.setColour (juce::Colour (0x24120803)); // Roasted walnut grain
+                g.strokePath (grain, juce::PathStrokeType (1.8f));
+            }
+            else if (lineIdx % 3 == 1)
+            {
+                g.setColour (juce::Colour (0x16704523)); // Warm amber caramel fiber
+                g.strokePath (grain, juce::PathStrokeType (1.2f));
+            }
+            else
+            {
+                g.setColour (juce::Colour (0x0e8d5830)); // Honey ray highlight
+                g.strokePath (grain, juce::PathStrokeType (0.9f));
+            }
+        }
+
+        // Longitudinal wood pores (tactile micro-texture)
+        juce::Random rand (42);
+        g.setColour (juce::Colour (0x1224140a));
+        for (int i = 0; i < 110; ++i)
+        {
+            float px = faceplate.getX() + rand.nextFloat() * (w - 40.0f);
+            float py = startY + rand.nextFloat() * (endY - startY);
+            float len = 14.0f + rand.nextFloat() * 40.0f;
+            g.drawHorizontalLine (static_cast<int>(py), px, px + len);
+        }
+
+        // Hand-rubbed warm satin oil luster
+        juce::ColourGradient sheenGrad (juce::Colour (0x18f5b860), faceplate.getCentreX() - 80.0f, faceplate.getY() + 110.0f,
+                                        juce::Colours::transparentBlack, faceplate.getCentreX() - 80.0f, faceplate.getY() + 380.0f, true);
+        g.setGradientFill (sheenGrad);
+        g.fillRoundedRectangle (faceplate, 8.0f);
+
+        // Soft perimeter vignette
+        juce::ColourGradient vignetteGrad (juce::Colours::transparentBlack, faceplate.getCentreX(), faceplate.getCentreY(),
+                                           juce::Colour (0x4a0e0703), faceplate.getRight(), faceplate.getBottom(), true);
+        g.setGradientFill (vignetteGrad);
+        g.fillRoundedRectangle (faceplate, 8.0f);
+    }
+
+    // Inlaid Boxwood & Brass Perimeter Stringing
+    auto inlayRect = faceplate.reduced (4.0f);
+    g.setColour (juce::Colour (0x40000000));
+    g.drawRoundedRectangle (inlayRect.translated (0.5f, 0.8f), 6.0f, 1.0f);
+    g.setColour (juce::Colour (0x60cba358));
+    g.drawRoundedRectangle (inlayRect, 6.0f, 0.9f);
+
+    // 3. Vintage Corner Screws (Solid Antique Brass)
     auto drawScrew = [&g] (float cx, float cy)
     {
         const float r = 5.0f;
-        juce::ColourGradient screwGrad (juce::Colour (0xffd6be96), cx - r, cy - r,
-                                        juce::Colour (0xff735b3c), cx + r, cy + r, false);
+        juce::ColourGradient screwGrad (juce::Colour (0xffe2caa0), cx - r, cy - r,
+                                        juce::Colour (0xff7a5d38), cx + r, cy + r, false);
         g.setGradientFill (screwGrad);
         g.fillEllipse (cx - r, cy - r, r * 2.0f, r * 2.0f);
-        g.setColour (juce::Colour (0xff4f3a24));
-        g.drawEllipse (cx - r, cy - r, r * 2.0f, r * 2.0f, 0.8f);
+        g.setColour (juce::Colour (0xff3d2916));
+        g.drawEllipse (cx - r, cy - r, r * 2.0f, r * 2.0f, 0.9f);
 
         const float slot = r * 1.3f;
         const float dx = std::cos (0.7f) * slot * 0.5f;
         const float dy = std::sin (0.7f) * slot * 0.5f;
-        g.setColour (juce::Colour (0xff2b1f13));
+        g.setColour (juce::Colour (0xff201309));
         g.drawLine (cx - dx, cy - dy, cx + dx, cy + dy, 1.4f);
     };
 
@@ -377,37 +470,64 @@ void HatHumanizerAudioProcessorEditor::paint (juce::Graphics& g)
     drawScrew (faceplate.getX() + 14.0f, faceplate.getBottom() - 14.0f);
     drawScrew (faceplate.getRight() - 14.0f, faceplate.getBottom() - 14.0f);
 
-    // 4. Header Banner
-    g.setColour (juce::Colour (0xff2b1b11));
+    // 4. Header Banner - Embossed Inlaid Brass
+    g.setColour (juce::Colour (0xbb0f0803));
     g.setFont (juce::FontOptions (22.0f).withStyle ("Bold"));
-    g.drawText ("HAT HUMANIZER", 32, 13, 260, 24, juce::Justification::left);
+    g.drawText ("HAT HUMANIZER", 33, 15, 260, 24, juce::Justification::left);
 
-    g.setColour (juce::Colour (0xffba9f7d));
+    juce::ColourGradient goldTextGrad (juce::Colour (0xfffae7b5), 32, 13,
+                                       juce::Colour (0xffd1a150), 32, 37, false);
+    g.setGradientFill (goldTextGrad);
+    g.drawText ("HAT HUMANIZER", 32, 14, 260, 24, juce::Justification::left);
+
+    // Inlaid Brass Divider Bar
+    g.setColour (juce::Colour (0x55000000));
     g.drawHorizontalLine (64, faceplate.getX() + 16.0f, faceplate.getRight() - 16.0f);
-    g.setColour (juce::Colour (0xfff5eedf));
+    g.setColour (juce::Colour (0x60cba358));
     g.drawHorizontalLine (65, faceplate.getX() + 16.0f, faceplate.getRight() - 16.0f);
 
-    // 5. Section Cards
+    // 5. Section Cards - Recessed Parchment Modular Panels
     auto drawCard = [&g] (juce::Rectangle<int> rect, const juce::String& title, const juce::Colour& ribbonColor)
     {
         auto r = rect.toFloat();
 
-        g.setColour (juce::Colour (0xfff4ecdc));
-        g.fillRoundedRectangle (r, 8.0f);
-        g.setColour (juce::Colour (0xffc4b195));
-        g.drawRoundedRectangle (r, 8.0f, 1.2f);
+        // Drop shadow cast on the wood
+        g.setColour (juce::Colour (0x500d0703));
+        g.fillRoundedRectangle (r.expanded (1.5f).translated (0.0f, 2.5f), 9.0f);
 
+        // Warm textured ivory parchment base
+        juce::ColourGradient cardGrad (juce::Colour (0xfffcf7ed), r.getX(), r.getY(),
+                                       juce::Colour (0xffeee2cb), r.getX(), r.getBottom(), false);
+        g.setGradientFill (cardGrad);
+        g.fillRoundedRectangle (r, 8.0f);
+
+        // Subtle organic parchment paper fibers
+        g.setColour (juce::Colour (0x093a2210));
+        for (float cy = r.getY() + 34.0f; cy < r.getBottom() - 4.0f; cy += 6.0f)
+            g.drawHorizontalLine (static_cast<int>(cy), r.getX() + 6.0f, r.getRight() - 6.0f);
+
+        // Bevel border (dark walnut inlay + brass highlight)
+        g.setColour (juce::Colour (0xff362312));
+        g.drawRoundedRectangle (r, 8.0f, 1.2f);
+        g.setColour (juce::Colour (0x45cba358));
+        g.drawRoundedRectangle (r.reduced (1.0f), 7.0f, 0.8f);
+
+        // Header Ribbon
         auto ribbon = juce::Rectangle<float> (r.getX(), r.getY(), r.getWidth(), 28.0f);
         juce::Path ribbonPath;
         ribbonPath.addRoundedRectangle (ribbon.getX(), ribbon.getY(), ribbon.getWidth(), ribbon.getHeight(), 8.0f, 8.0f, true, true, false, false);
         g.setColour (ribbonColor);
         g.fillPath (ribbonPath);
 
+        // Ribbon 3D highlight
+        g.setColour (juce::Colours::white.withAlpha (0.22f));
+        g.drawLine (ribbon.getX() + 2.0f, ribbon.getY() + 1.0f, ribbon.getRight() - 2.0f, ribbon.getY() + 1.0f, 1.0f);
+
         g.setColour (juce::Colour (0xfffcf8ee));
         g.setFont (juce::FontOptions (11.5f).withStyle ("Bold"));
         g.drawText (title, (int)ribbon.getX() + 12, (int)ribbon.getY() + 5, (int)ribbon.getWidth() - 24, 18, juce::Justification::left);
 
-        g.setColour (juce::Colour (0x30000000));
+        g.setColour (juce::Colour (0x35000000));
         g.drawHorizontalLine ((int)ribbon.getBottom(), ribbon.getX(), ribbon.getRight());
     };
 
