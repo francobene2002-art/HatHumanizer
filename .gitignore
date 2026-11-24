@@ -33,6 +33,12 @@
 *.sdf
 *.opensdf
 
+# Documentation & academic reports
+*.docx
+*.pptx
+Presentacion_HatHumanizer.html
+*.ps1
+
 # OS files
 Thumbs.db
 .DS_Store
